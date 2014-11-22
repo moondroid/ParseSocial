@@ -8,6 +8,7 @@ import android.os.SystemClock;
 import android.util.Log;
 
 import com.parse.Parse;
+import com.parse.ParseACL;
 import com.parse.ParseAnalytics;
 
 import java.text.SimpleDateFormat;
@@ -28,6 +29,26 @@ public class ParseSocialApp extends Application {
 		 * Fill in this section with your Parse credentials
 		 */
         Parse.initialize(this, getResources().getString(R.string.application_key), getResources().getString(R.string.client_key));
+
+
+        /*
+		 * For more information on app security and Parse ACL:
+		 * https://www.parse.com/docs/android_guide#security-recommendations
+		 */
+        ParseACL defaultACL = new ParseACL();
+
+		/*
+		 * If you would like all objects to be private by default, remove this
+		 * line
+		 */
+        defaultACL.setPublicReadAccess(true);
+        defaultACL.setPublicWriteAccess(false);
+
+		/*
+		 * Default ACL is public read access, and user read/write access
+		 */
+        ParseACL.setDefaultACL(defaultACL, true);
+
 
         //requires ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION permission
 //        final LocationManager mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
