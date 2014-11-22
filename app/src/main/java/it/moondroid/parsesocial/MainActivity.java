@@ -7,6 +7,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.parse.ParseAnalytics;
 import com.parse.ParseUser;
@@ -17,6 +18,7 @@ public class MainActivity extends ActionBarActivity {
     private static final int REQUEST_CODE_LOGIN = 1;
 
     private Button btnLogin;
+    private TextView textUserName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +30,7 @@ public class MainActivity extends ActionBarActivity {
         }
 
         btnLogin = (Button)findViewById(R.id.button_login);
+        textUserName = (TextView)findViewById(R.id.textUser);
         updateLoginState();
 
         findViewById(R.id.button_save_object).setOnClickListener(new View.OnClickListener() {
@@ -80,6 +83,8 @@ public class MainActivity extends ActionBarActivity {
         ParseUser currentUser = ParseUser.getCurrentUser();
         if (currentUser != null) {
             // do stuff with the user
+            textUserName.setText(currentUser.getUsername());
+            textUserName.setVisibility(View.VISIBLE);
             btnLogin.setText("LOGOUT");
             btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -92,6 +97,8 @@ public class MainActivity extends ActionBarActivity {
 
         } else {
             // show the signup or login screen
+            textUserName.setText("");
+            textUserName.setVisibility(View.GONE);
             btnLogin.setText("LOGIN");
             btnLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
