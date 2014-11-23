@@ -29,19 +29,12 @@ public class Follow extends ParseObject {
 
     public Follow (ParseUser to){
 
-        this(ParseUser.getCurrentUser(), to, new Date());
-    }
-
-    public Follow(ParseUser from, ParseUser to){
-
-        this(from, to, new Date());
-    }
-
-    public Follow(ParseUser from, ParseUser to, Date date){
-        setFromUser(from);
+        setFromUser(ParseUser.getCurrentUser());
         setToUser(to);
-        setDate(date);
+        setDate(new Date());
+
     }
+
 
     public ParseUser getFromUser() {
         return getParseUser("from");
@@ -71,9 +64,19 @@ public class Follow extends ParseObject {
 
 
     public void getUsersImFollowing(final FindCallback<ParseObject> callback){
+
+        getUsersIsFollowing(ParseUser.getCurrentUser(), callback);
+    }
+
+    public void getUsersFollowingMe (final FindCallback<ParseObject> callback){
+
+        getUsersFollowingUser(ParseUser.getCurrentUser(), callback);
+    }
+
+    public void getUsersIsFollowing(ParseUser user, final FindCallback<ParseObject> callback){
         // set up the query on the Follow table
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Follow");
-        query.whereEqualTo("from", ParseUser.getCurrentUser());
+        query.whereEqualTo("from", user);
 
         // execute the query
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -83,10 +86,10 @@ public class Follow extends ParseObject {
         });
     }
 
-    public void getUsersFollowingMe (final FindCallback<ParseObject> callback){
+    public void getUsersFollowingUser (ParseUser user, final FindCallback<ParseObject> callback){
         // set up the query on the Follow table
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Follow");
-        query.whereEqualTo("to", ParseUser.getCurrentUser());
+        query.whereEqualTo("to", user);
 
         // execute the query
         query.findInBackground(new FindCallback<ParseObject>() {
@@ -95,4 +98,5 @@ public class Follow extends ParseObject {
             }
         });
     }
+
 }
