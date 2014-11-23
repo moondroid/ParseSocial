@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/Parse-1.7.1/Parse-1.7.1.iml" filepath="$PROJECT_DIR$/Parse-1.7.1/Parse-1.7.1.iml" />
       <module fileurl="file://$PROJECT_DIR$/ParseSocial.iml" filepath="$PROJECT_DIR$/ParseSocial.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/sociallib/sociallib.iml" filepath="$PROJECT_DIR$/sociallib/sociallib.iml" />
     </modules>
   </component>
 </project>
