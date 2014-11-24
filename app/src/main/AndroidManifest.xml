@@ -38,6 +38,10 @@
             android:label="@string/title_activity_login"
             android:windowSoftInputMode="adjustResize|stateVisible" >
         </activity>
+        <activity
+            android:name="it.moondroid.parsesocial.AllPostsActivity"
+            android:label="@string/title_activity_all_posts" >
+        </activity>
     </application>
 
 </manifest>

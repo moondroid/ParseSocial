@@ -46,6 +46,13 @@ public class MainActivity extends ActionBarActivity {
                 startActivity(new Intent(MainActivity.this, ReadObjectsActivity.class));
             }
         });
+
+        findViewById(R.id.button_read_posts).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AllPostsActivity.class));
+            }
+        });
     }
 
 
