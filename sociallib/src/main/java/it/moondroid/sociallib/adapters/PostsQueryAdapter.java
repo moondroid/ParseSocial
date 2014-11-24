@@ -1,4 +1,4 @@
-package it.moondroid.sociallib.it.moondroid.sociallib.adapters;
+package it.moondroid.sociallib.adapters;
 
 import android.content.Context;
 import android.view.View;
