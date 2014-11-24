@@ -1,5 +1,7 @@
 package it.moondroid.sociallib.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -19,9 +21,30 @@ public class AllPostsFragment extends Fragment implements AdapterView.OnItemClic
 
     private PostsQueryAdapter adapter;
 
+    private OnPostSelectedListener mListener;
+
+    public interface OnPostSelectedListener {
+        public void onPostSelected(String postId);
+    }
+
+
     public AllPostsFragment() {
     }
 
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (OnPostSelectedListener) activity;
+        } catch (ClassCastException e) {
+            mListener = new OnPostSelectedListener() {
+                @Override
+                public void onPostSelected(String postId) {
+                    //do nothing
+                }
+            };
+        }
+    }
 
     @Nullable
     @Override
@@ -43,7 +66,8 @@ public class AllPostsFragment extends Fragment implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+        String postId = adapter.getItem(position).getObjectId();
+        mListener.onPostSelected(postId);
     }
 
 

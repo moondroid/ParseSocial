@@ -1,5 +1,6 @@
 package it.moondroid.parsesocial;
 
+import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
 import android.support.v4.app.Fragment;
@@ -21,7 +22,7 @@ import it.moondroid.sociallib.fragments.CreatePostDialogFragment;
 import it.moondroid.sociallib.fragments.CreatePostDialogInterface;
 
 
-public class AllPostsActivity extends ActionBarActivity {
+public class AllPostsActivity extends ActionBarActivity implements AllPostsFragment.OnPostSelectedListener {
 
     private int counter = 1;
     private AllPostsFragment postsFragment;
@@ -85,4 +86,10 @@ public class AllPostsActivity extends ActionBarActivity {
     }
 
 
+    @Override
+    public void onPostSelected(String postId) {
+        Intent i = new Intent(this, PostDetailActivity.class);
+        i.putExtra(PostDetailActivity.EXTRA_POST_ID, postId);
+        startActivity(i);
+    }
 }
