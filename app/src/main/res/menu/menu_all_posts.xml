@@ -2,6 +2,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="it.moondroid.parsesocial.AllPostsActivity">
+
+    <item android:id="@+id/action_add_post" android:title="@string/action_add_post"
+        android:orderInCategory="100" app:showAsAction="always" />
+
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
 </menu>

@@ -11,19 +11,29 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.parse.ParseException;
+import com.parse.SaveCallback;
+
+import it.moondroid.sociallib.entities.Post;
 import it.moondroid.sociallib.fragments.AllPostsFragment;
 
 
 public class AllPostsActivity extends ActionBarActivity {
+
+    private int counter = 1;
+    private AllPostsFragment postsFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_all_posts);
         if (savedInstanceState == null) {
+            postsFragment = new AllPostsFragment();
             getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new AllPostsFragment())
+                    .add(R.id.container, postsFragment, "AllPostsFragment")
                     .commit();
+        }else {
+            postsFragment = (AllPostsFragment) getSupportFragmentManager().findFragmentByTag("AllPostsFragment");
         }
     }
 
@@ -45,6 +55,19 @@ public class AllPostsActivity extends ActionBarActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+
+        if (id == R.id.action_add_post){
+            Post post = new Post("post di prova "+counter);
+            counter++;
+            post.saveInBackground(new SaveCallback() {
+                @Override
+                public void done(ParseException e) {
+                    if (e == null){
+                        postsFragment.update();
+                    }
+                }
+            });
         }
 
         return super.onOptionsItemSelected(item);

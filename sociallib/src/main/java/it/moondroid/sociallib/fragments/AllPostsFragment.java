@@ -28,7 +28,7 @@ import it.moondroid.sociallib.R;
 public class AllPostsFragment extends Fragment implements AdapterView.OnItemClickListener {
 
     private ArrayList<ParseObject> objects = new ArrayList<ParseObject>();
-    private ArrayList<String> players = new ArrayList<String>();
+    private ArrayList<String> titles = new ArrayList<String>();
     private ArrayAdapter<String> adapter;
 
 
@@ -40,17 +40,22 @@ public class AllPostsFragment extends Fragment implements AdapterView.OnItemClic
         super.onActivityCreated(savedInstanceState);
 
         if (savedInstanceState == null){
-            updateObjects();
+            update();
         }
     }
+
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_all_posts, container, false);
 
+        if(savedInstanceState!=null){
+            titles = (ArrayList<String>) savedInstanceState.getSerializable("titles");
+        }
+
         ListView objectListView = (ListView)fragmentView.findViewById(R.id.objects_list);
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, players);
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, titles);
         objectListView.setAdapter(adapter);
         objectListView.setEmptyView(fragmentView.findViewById(R.id.empty_list));
 
@@ -64,8 +69,13 @@ public class AllPostsFragment extends Fragment implements AdapterView.OnItemClic
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putSerializable("titles", titles);
+        super.onSaveInstanceState(outState);
+    }
 
-    private void updateObjects(){
+    public void update(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -74,10 +84,10 @@ public class AllPostsFragment extends Fragment implements AdapterView.OnItemClic
                     // Success!
                     Toast.makeText(getActivity(), "found " + parseObjects.size() + " objects", Toast.LENGTH_SHORT).show();
                     objects.clear();
-                    players.clear();
+                    titles.clear();
                     for(ParseObject object : parseObjects){
                         Log.d("AllPostsFragment.findInBackground.done", "id: " + object.getObjectId() + " text: " + object.getString("text"));
-                        players.add(object.getString("text"));
+                        titles.add(object.getString("text"));
                         objects.add(object);
                     }
                     adapter.notifyDataSetChanged();

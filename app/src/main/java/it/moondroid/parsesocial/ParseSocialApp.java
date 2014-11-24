@@ -10,11 +10,14 @@ import android.util.Log;
 import com.parse.Parse;
 import com.parse.ParseACL;
 import com.parse.ParseAnalytics;
+import com.parse.ParseObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import it.moondroid.sociallib.entities.Post;
 
 /**
  * Created by Marco on 22/11/2014.
@@ -49,6 +52,11 @@ public class ParseSocialApp extends Application {
 		 */
         ParseACL.setDefaultACL(defaultACL, true);
 
+
+        /*
+         * Register custom objects
+         */
+        ParseObject.registerSubclass(Post.class);
 
         //requires ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION permission
 //        final LocationManager mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
