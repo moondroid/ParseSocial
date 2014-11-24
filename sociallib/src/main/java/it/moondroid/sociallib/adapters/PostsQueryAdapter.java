@@ -22,6 +22,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
             public ParseQuery create() {
                 ParseQuery query = new ParseQuery("Post");
                 query.include("from"); //retrieve user also
+                query.orderByDescending("date"); //lastest posts first
                 //query.whereEqualTo("highPri", true);
                 return query;
             }
