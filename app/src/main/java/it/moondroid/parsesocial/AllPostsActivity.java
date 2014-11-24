@@ -10,12 +10,15 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
+import android.widget.Toast;
 
 import com.parse.ParseException;
 import com.parse.SaveCallback;
 
 import it.moondroid.sociallib.entities.Post;
 import it.moondroid.sociallib.fragments.AllPostsFragment;
+import it.moondroid.sociallib.fragments.CreatePostDialogFragment;
+import it.moondroid.sociallib.fragments.CreatePostDialogInterface;
 
 
 public class AllPostsActivity extends ActionBarActivity {
@@ -32,7 +35,7 @@ public class AllPostsActivity extends ActionBarActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, postsFragment, "AllPostsFragment")
                     .commit();
-        }else {
+        } else {
             postsFragment = (AllPostsFragment) getSupportFragmentManager().findFragmentByTag("AllPostsFragment");
         }
     }
@@ -57,17 +60,25 @@ public class AllPostsActivity extends ActionBarActivity {
             return true;
         }
 
-        if (id == R.id.action_add_post){
-            Post post = new Post("post di prova "+counter);
-            counter++;
-            post.saveInBackground(new SaveCallback() {
+        if (id == R.id.action_add_post) {
+
+            new CreatePostDialogFragment.Builder(this).setSendPostButton(new CreatePostDialogInterface.OnClickListener() {
                 @Override
-                public void done(ParseException e) {
-                    if (e == null){
-                        postsFragment.update();
-                    }
+                public void onClick(CreatePostDialogInterface dialog, int which) {
+
+                    Post post = new Post(dialog.getContentText());
+                    post.saveInBackground(new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                Toast.makeText(AllPostsActivity.this, "added", Toast.LENGTH_SHORT).show();
+                                postsFragment.update();
+                            }
+                        }
+                    });
+
                 }
-            });
+            }).show();
         }
 
         return super.onOptionsItemSelected(item);
