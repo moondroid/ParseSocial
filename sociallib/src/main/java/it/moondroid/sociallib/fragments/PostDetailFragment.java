@@ -24,6 +24,7 @@ import it.moondroid.sociallib.adapters.CommentsQueryAdapter;
 import it.moondroid.sociallib.adapters.PostsQueryAdapter;
 import it.moondroid.sociallib.entities.Comment;
 import it.moondroid.sociallib.entities.Post;
+import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by marco.granatiero on 24/11/2014.
@@ -84,9 +85,15 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                 if(!commentString.isEmpty() && post != null){
                     final Comment comment = new Comment(post.getObjectId(), commentString);
                     //post.addComment(comment);
+
+                    final MaterialDialog pd = new MaterialDialog(getActivity())
+                            .setContentView(getActivity().getLayoutInflater().inflate(R.layout.dialog_indeterminate, null))
+                            .setCanceledOnTouchOutside(false);
+                    pd.show();
                     comment.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
+                            pd.dismiss();
                             if (e == null) {
                                 // Success!
                                 String objectId = comment.getObjectId();

@@ -1,5 +1,6 @@
 package it.moondroid.parsesocial;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -20,6 +21,7 @@ import it.moondroid.sociallib.entities.Post;
 import it.moondroid.sociallib.fragments.AllPostsFragment;
 import it.moondroid.sociallib.fragments.CreatePostDialogFragment;
 import it.moondroid.sociallib.fragments.CreatePostDialogInterface;
+import me.drakeet.materialdialog.MaterialDialog;
 
 
 public class AllPostsActivity extends ActionBarActivity implements AllPostsFragment.OnPostSelectedListener {
@@ -67,12 +69,20 @@ public class AllPostsActivity extends ActionBarActivity implements AllPostsFragm
                 @Override
                 public void onClick(CreatePostDialogInterface dialog, int which) {
 
+                    final MaterialDialog pd = new MaterialDialog(AllPostsActivity.this)
+//                            .setTitle("Processing...")
+//                            .setMessage("Please wait.")
+                            .setContentView(getLayoutInflater().inflate(R.layout.dialog_indeterminate, null))
+                            .setCanceledOnTouchOutside(false);
+                    pd.show();
+
                     Post post = new Post(dialog.getContentText());
                     post.saveInBackground(new SaveCallback() {
                         @Override
                         public void done(ParseException e) {
+                            pd.dismiss();
                             if (e == null) {
-                                Toast.makeText(AllPostsActivity.this, "added", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(AllPostsActivity.this, "post pubblicato", Toast.LENGTH_SHORT).show();
                                 postsFragment.update();
                             }
                         }
