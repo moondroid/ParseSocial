@@ -5,6 +5,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.IconTextView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
@@ -12,6 +13,7 @@ import com.parse.ParseQueryAdapter;
 
 import it.moondroid.sociallib.R;
 import it.moondroid.sociallib.entities.Post;
+import it.moondroid.sociallib.widgets.LikeIconTextView;
 
 /**
  * Created by marco.granatiero on 24/11/2014.
@@ -41,7 +43,8 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
             v = View.inflate(getContext(), R.layout.item_post, null);
 
             viewHolder = new ViewHolderItem();
-            viewHolder.textViewItem = (IconTextView) v.findViewById(R.id.post_num_comments);
+            viewHolder.commentsTextView = (IconTextView) v.findViewById(R.id.post_num_comments);
+            viewHolder.likesTextView = (LikeIconTextView) v.findViewById(R.id.post_num_likes);
             v.setTag(viewHolder);
 
         } else {
@@ -67,7 +70,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
 
 
         CommentsCountLoader task = new CommentsCountLoader(getContext());
-        task.loadCommentsCount((Post) object, viewHolder.textViewItem);
+        task.loadCommentsCount((Post) object, viewHolder.commentsTextView);
 
         return v;
     }
@@ -75,7 +78,8 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
     // our ViewHolder.
     // caches our TextView
     static class ViewHolderItem {
-        IconTextView textViewItem;
+        IconTextView commentsTextView;
+        LikeIconTextView likesTextView;
     }
 
 }

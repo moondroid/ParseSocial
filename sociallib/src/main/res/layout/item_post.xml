@@ -57,12 +57,31 @@
         android:visibility="visible"/>
 
 
-    <IconTextView
-        android:id="@+id/post_num_comments"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="right"
-        android:text="{fa-comment-o}"
-        android:textSize="20dp"
-        android:textStyle="bold" />
+        android:layout_marginTop="8dp">
+
+        <it.moondroid.sociallib.widgets.LikeIconTextView
+            android:id="@+id/post_num_likes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:layout_alignParentLeft="true"
+            android:text="{fa-star-o}"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <IconTextView
+            android:id="@+id/post_num_comments"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:layout_alignParentRight="true"
+            android:text="{fa-comment-o}"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        </RelativeLayout>
+
 </LinearLayout>
