@@ -1,15 +1,24 @@
 package it.moondroid.sociallib.adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.IconTextView;
 import android.widget.TextView;
 
+import com.parse.CountCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
+
 import it.moondroid.sociallib.R;
+import it.moondroid.sociallib.entities.Comment;
+import it.moondroid.sociallib.entities.Post;
 
 /**
  * Created by marco.granatiero on 24/11/2014.
@@ -27,14 +36,23 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
                 return query;
             }
         });
-
     }
 
 
     @Override
-    public View getItemView(ParseObject object, View v, ViewGroup parent) {
+    public View getItemView(final ParseObject object, View v, ViewGroup parent) {
+
+        final ViewHolderItem viewHolder;
+
         if (v == null) {
             v = View.inflate(getContext(), R.layout.item_post, null);
+
+            viewHolder = new ViewHolderItem();
+            viewHolder.textViewItem = (IconTextView) v.findViewById(R.id.post_num_comments);
+            v.setTag(viewHolder);
+
+        } else {
+            viewHolder = (ViewHolderItem) v.getTag();
         }
 
         // Take advantage of ParseQueryAdapter's getItemView logic for
@@ -54,6 +72,17 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
         TextView userView = (TextView) v.findViewById(R.id.user_name);
         userView.setText(object.getParseUser("from").getUsername());
 
+
+        CommentsCountLoader task = new CommentsCountLoader(getContext());
+        task.setCommentsCount((Post) object, viewHolder.textViewItem);
+
         return v;
     }
+
+    // our ViewHolder.
+    // caches our TextView
+    static class ViewHolderItem {
+        IconTextView textViewItem;
+    }
+
 }

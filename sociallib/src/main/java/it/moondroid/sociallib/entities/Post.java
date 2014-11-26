@@ -45,4 +45,28 @@ public class Post extends ParseObject {
     public void setDate(Date date) {
         put("date", date);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ParseObject parseObject = (ParseObject) o;
+
+        if (!getObjectId().equalsIgnoreCase(parseObject.getObjectId())) {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return getObjectId().hashCode();
+    }
+
 }

@@ -56,4 +56,13 @@
         android:textSize="20sp"
         android:visibility="visible"/>
 
+
+    <IconTextView
+        android:id="@+id/post_num_comments"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:text="{fa-comment-o}"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 </LinearLayout>

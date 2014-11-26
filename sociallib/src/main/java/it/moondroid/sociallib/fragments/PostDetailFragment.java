@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.EditText;
+import android.widget.IconTextView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -20,6 +21,7 @@ import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import it.moondroid.sociallib.R;
+import it.moondroid.sociallib.adapters.CommentsCountLoader;
 import it.moondroid.sociallib.adapters.CommentsQueryAdapter;
 import it.moondroid.sociallib.adapters.PostsQueryAdapter;
 import it.moondroid.sociallib.entities.Comment;
@@ -38,6 +40,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
     private CommentsQueryAdapter adapter;
     private TextView descriptionView, dateView, userView;
     private EditText editTextComment;
+    private IconTextView numComments;
 
     public PostDetailFragment() {
     }
@@ -70,13 +73,9 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
         editTextComment = (EditText) fragmentView.findViewById(R.id.edit_post_content);
 
         objectListView = (ListView)fragmentView.findViewById(R.id.comments_list);
-//        adapter = new CommentsQueryAdapter(getActivity());
-        //adapter.setTextKey("text");
-        //adapter.setImageKey("photo");
 
-//        objectListView.setAdapter(adapter);
-//        objectListView.setEmptyView(fragmentView.findViewById(R.id.empty_list));
-//        objectListView.setOnItemClickListener(this);
+        numComments = (IconTextView) fragmentView.findViewById(R.id.post_num_comments);
+
 
         fragmentView.findViewById(R.id.btn_send).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +139,8 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                     android.text.format.DateFormat df = new android.text.format.DateFormat();
                     dateView.setText(df.format("dd MMMM - hh:mm", post.getDate("date")));
                     userView.setText(post.getParseUser("from").getUsername());
+                    CommentsCountLoader task = new CommentsCountLoader(getActivity());
+                    task.setCommentsCount(post, numComments);
 
                     adapter = new CommentsQueryAdapter(getActivity(), post.getObjectId());
                     objectListView.setAdapter(adapter);
