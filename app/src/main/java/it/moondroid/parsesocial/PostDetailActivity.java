@@ -1,5 +1,6 @@
 package it.moondroid.parsesocial;
 
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
@@ -18,6 +19,8 @@ public class PostDetailActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         String postId = getIntent().getStringExtra(EXTRA_POST_ID);
 
@@ -48,6 +51,12 @@ public class PostDetailActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            return true;
+        }
+
+        // Respond to the action bar's Up/Home button
+        if (id == android.R.id.home) {
+            NavUtils.navigateUpFromSameTask(this);
             return true;
         }
 

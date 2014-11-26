@@ -44,7 +44,13 @@
         </activity>
         <activity
             android:name="it.moondroid.parsesocial.PostDetailActivity"
-            android:label="@string/title_activity_post_detail" >
+            android:label="@string/title_activity_post_detail"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:parentActivityName="it.moondroid.parsesocial.AllPostsActivity" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="it.moondroid.parsesocial.AllPostsActivity" />
         </activity>
     </application>
 
