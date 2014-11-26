@@ -23,7 +23,6 @@ import com.parse.SaveCallback;
 import it.moondroid.sociallib.R;
 import it.moondroid.sociallib.adapters.CommentsCountLoader;
 import it.moondroid.sociallib.adapters.CommentsQueryAdapter;
-import it.moondroid.sociallib.adapters.PostsQueryAdapter;
 import it.moondroid.sociallib.entities.Comment;
 import it.moondroid.sociallib.entities.Post;
 import me.drakeet.materialdialog.MaterialDialog;
@@ -100,6 +99,8 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                                 Toast.makeText(getActivity(), "comment added", Toast.LENGTH_SHORT).show();
                                 editTextComment.setText("");
                                 adapter.loadObjects();
+                                CommentsCountLoader task = new CommentsCountLoader(getActivity());
+                                task.loadCommentsCount(post, numComments, true);
                             } else {
                                 // Failure!
                                 Log.e("PostDetailFragment.saveInBackground.done", "error: "+e.getLocalizedMessage());
@@ -140,7 +141,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                     dateView.setText(df.format("dd MMMM - hh:mm", post.getDate("date")));
                     userView.setText(post.getParseUser("from").getUsername());
                     CommentsCountLoader task = new CommentsCountLoader(getActivity());
-                    task.setCommentsCount(post, numComments);
+                    task.loadCommentsCount(post, numComments);
 
                     adapter = new CommentsQueryAdapter(getActivity(), post.getObjectId());
                     objectListView.setAdapter(adapter);

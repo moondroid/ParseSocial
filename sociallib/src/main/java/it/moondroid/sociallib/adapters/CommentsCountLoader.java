@@ -29,7 +29,14 @@ public class CommentsCountLoader extends ParseQuery<ParseObject> {
         this.context = context;
     }
 
-    public void setCommentsCount(final Post postObject, IconTextView iconTextView) {
+    public void loadCommentsCount(final Post postObject, IconTextView iconTextView, boolean forceUpdate) {
+        if(forceUpdate){
+            comments.remove(postObject);
+        }
+        loadCommentsCount(postObject, iconTextView);
+    }
+
+    public void loadCommentsCount(final Post postObject, IconTextView iconTextView) {
         if (comments.containsKey(postObject)) {
             iconTextView.setText(String.format(context.getResources().getString(R.string.comments_count),
                     comments.get(postObject)));

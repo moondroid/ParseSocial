@@ -1,23 +1,16 @@
 package it.moondroid.sociallib.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.IconTextView;
 import android.widget.TextView;
 
-import com.parse.CountCallback;
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
-import java.lang.ref.WeakReference;
-import java.util.HashMap;
-
 import it.moondroid.sociallib.R;
-import it.moondroid.sociallib.entities.Comment;
 import it.moondroid.sociallib.entities.Post;
 
 /**
@@ -74,7 +67,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
 
 
         CommentsCountLoader task = new CommentsCountLoader(getContext());
-        task.setCommentsCount((Post) object, viewHolder.textViewItem);
+        task.loadCommentsCount((Post) object, viewHolder.textViewItem);
 
         return v;
     }
