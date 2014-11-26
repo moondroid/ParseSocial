@@ -25,6 +25,7 @@ import it.moondroid.sociallib.adapters.CommentsCountLoader;
 import it.moondroid.sociallib.adapters.CommentsQueryAdapter;
 import it.moondroid.sociallib.entities.Comment;
 import it.moondroid.sociallib.entities.Post;
+import it.moondroid.sociallib.widgets.LikeIconTextView;
 import me.drakeet.materialdialog.MaterialDialog;
 
 /**
@@ -40,6 +41,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
     private TextView descriptionView, dateView, userView;
     private EditText editTextComment;
     private IconTextView numComments;
+    private LikeIconTextView numLikes;
 
     public PostDetailFragment() {
     }
@@ -74,7 +76,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
         objectListView = (ListView)fragmentView.findViewById(R.id.comments_list);
 
         numComments = (IconTextView) fragmentView.findViewById(R.id.post_num_comments);
-
+        numLikes = (LikeIconTextView) fragmentView.findViewById(R.id.post_num_likes);
 
         fragmentView.findViewById(R.id.btn_send).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -101,6 +103,9 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                                 adapter.loadObjects();
                                 CommentsCountLoader task = new CommentsCountLoader(getActivity());
                                 task.loadCommentsCount(post, numComments, true);
+
+                                numLikes.setPost(post);
+
                             } else {
                                 // Failure!
                                 Log.e("PostDetailFragment.saveInBackground.done", "error: "+e.getLocalizedMessage());

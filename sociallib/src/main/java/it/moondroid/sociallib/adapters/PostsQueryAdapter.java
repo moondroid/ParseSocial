@@ -72,6 +72,8 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
         CommentsCountLoader task = new CommentsCountLoader(getContext());
         task.loadCommentsCount((Post) object, viewHolder.commentsTextView);
 
+        viewHolder.likesTextView.setPost((Post) object);
+
         return v;
     }
 
