@@ -2,18 +2,14 @@ package it.moondroid.sociallib.widgets;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.IconTextView;
-import android.widget.Toast;
 
 import com.parse.CountCallback;
-import com.parse.DeleteCallback;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
-import com.parse.SaveCallback;
 
 import it.moondroid.sociallib.entities.Like;
 import it.moondroid.sociallib.entities.Post;
@@ -57,11 +53,11 @@ public class LikeIconTextView extends IconTextView {
             public void onClick(View v) {
 
                 if(post != null){
-                    toggleLikeUI();
+                    toggle();
                     if(isLikedByMe){
-                        addNewLike();
+                        //addNewLike(); //TODO
                     }else {
-                        removeLike();
+                        //removeLike(); //TODO
                     }
                 }
 
@@ -78,7 +74,7 @@ public class LikeIconTextView extends IconTextView {
         }
     }
 
-    private void toggleLikeUI(){
+    public void toggle(){
         isLikedByMe = !isLikedByMe;
         if(isLikedByMe){
             likeCount++;
@@ -86,6 +82,10 @@ public class LikeIconTextView extends IconTextView {
             likeCount--;
         }
         setIconAndCount();
+    }
+
+    public int getLikeCount(){
+        return likeCount;
     }
 
     private void setIconAndCount(){
@@ -126,39 +126,39 @@ public class LikeIconTextView extends IconTextView {
         });
     }
 
-    private void addNewLike(){
-
-        like = new Like(post);
-        like.saveInBackground(new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if(e != null){
-                    // Failure!
-                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
-                    toggleLikeUI();
-                }else {
-                    Toast.makeText(getContext(), "liked", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
-    private void removeLike(){
-        if (like != null){
-            like.deleteInBackground(new DeleteCallback() {
-                @Override
-                public void done(ParseException e) {
-                    if (e != null) {
-                        // Failure!
-                        Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
-                        toggleLikeUI();
-                    }else {
-                        Toast.makeText(getContext(), "disliked", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        } else {
-            Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
-        }
-    }
+//    private void addNewLike(){
+//
+//        like = new Like(post);
+//        like.saveInBackground(new SaveCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                if(e != null){
+//                    // Failure!
+//                    Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+//                    toggle();
+//                }else {
+//                    Toast.makeText(getContext(), "liked", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//    }
+//
+//    private void removeLike(){
+//        if (like != null){
+//            like.deleteInBackground(new DeleteCallback() {
+//                @Override
+//                public void done(ParseException e) {
+//                    if (e != null) {
+//                        // Failure!
+//                        Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+//                        toggle();
+//                    }else {
+//                        Toast.makeText(getContext(), "disliked", Toast.LENGTH_SHORT).show();
+//                    }
+//                }
+//            });
+//        } else {
+//            Toast.makeText(getContext(), "error", Toast.LENGTH_SHORT).show();
+//        }
+//    }
 }

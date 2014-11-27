@@ -12,7 +12,6 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import it.moondroid.sociallib.R;
-import it.moondroid.sociallib.entities.Post;
 import it.moondroid.sociallib.widgets.LikeIconTextView;
 
 /**
@@ -20,7 +19,8 @@ import it.moondroid.sociallib.widgets.LikeIconTextView;
  */
 public class PostsQueryAdapter extends ParseQueryAdapter {
 
-    CommentsCountLoader task;
+    CommentsCountLoader countLoader;
+    LikeCountLoader likeCountLoader;
 
     public PostsQueryAdapter(Context context) {
         //super(context, "Post");
@@ -33,7 +33,8 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
                 return query;
             }
         });
-        task = new CommentsCountLoader(getContext());
+        countLoader = new CommentsCountLoader(getContext());
+        likeCountLoader = new LikeCountLoader(getContext());
     }
 
 
@@ -47,7 +48,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
 
             viewHolder = new ViewHolderItem();
             //viewHolder.commentsTextView = (IconTextView) v.findViewById(R.id.post_num_comments);
-            viewHolder.likesTextView = (LikeIconTextView) v.findViewById(R.id.post_num_likes);
+            //viewHolder.likesTextView = (LikeIconTextView) v.findViewById(R.id.post_num_likes);
             v.setTag(viewHolder);
 
         } else {
@@ -73,9 +74,20 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
 
 
         IconTextView commentsTextView = (IconTextView) v.findViewById(R.id.post_num_comments);
-        task.loadCommentsCount(object.getObjectId(), commentsTextView);
+        countLoader.loadCommentsCount(object.getObjectId(), commentsTextView);
 
         //viewHolder.likesTextView.setPost((Post) object);
+        LikeIconTextView likesTextView = (LikeIconTextView) v.findViewById(R.id.post_num_likes);
+        likeCountLoader.loadLikeCount(object.getObjectId(), likesTextView);
+        likesTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                LikeIconTextView likeIconTextView = (LikeIconTextView)v;
+                likeIconTextView.toggle();
+                likeCountLoader.setLikeCount(object.getObjectId(), likeIconTextView.getLikeCount());
+                //Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         return v;
     }
@@ -84,7 +96,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
     // caches our TextView
     static class ViewHolderItem {
         //IconTextView commentsTextView;
-        LikeIconTextView likesTextView;
+        //LikeIconTextView likesTextView;
     }
 
 }
