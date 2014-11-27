@@ -20,6 +20,8 @@ import it.moondroid.sociallib.widgets.LikeIconTextView;
  */
 public class PostsQueryAdapter extends ParseQueryAdapter {
 
+    CommentsCountLoader task;
+
     public PostsQueryAdapter(Context context) {
         //super(context, "Post");
         super(context, new ParseQueryAdapter.QueryFactory<ParseObject>() {
@@ -31,6 +33,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
                 return query;
             }
         });
+        task = new CommentsCountLoader(getContext());
     }
 
 
@@ -43,7 +46,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
             v = View.inflate(getContext(), R.layout.item_post, null);
 
             viewHolder = new ViewHolderItem();
-            viewHolder.commentsTextView = (IconTextView) v.findViewById(R.id.post_num_comments);
+            //viewHolder.commentsTextView = (IconTextView) v.findViewById(R.id.post_num_comments);
             viewHolder.likesTextView = (LikeIconTextView) v.findViewById(R.id.post_num_likes);
             v.setTag(viewHolder);
 
@@ -69,10 +72,10 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
         userView.setText(object.getParseUser("from").getUsername());
 
 
-        CommentsCountLoader task = new CommentsCountLoader(getContext());
-        task.loadCommentsCount((Post) object, viewHolder.commentsTextView);
+        IconTextView commentsTextView = (IconTextView) v.findViewById(R.id.post_num_comments);
+        task.loadCommentsCount(object.getObjectId(), commentsTextView);
 
-        viewHolder.likesTextView.setPost((Post) object);
+        //viewHolder.likesTextView.setPost((Post) object);
 
         return v;
     }
@@ -80,7 +83,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
     // our ViewHolder.
     // caches our TextView
     static class ViewHolderItem {
-        IconTextView commentsTextView;
+        //IconTextView commentsTextView;
         LikeIconTextView likesTextView;
     }
 
