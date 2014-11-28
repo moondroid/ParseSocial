@@ -47,7 +47,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
             v = View.inflate(getContext(), R.layout.item_post, null);
 
             viewHolder = new ViewHolderItem();
-            //viewHolder.commentsTextView = (IconTextView) v.findViewById(R.id.post_num_comments);
+            viewHolder.commentsTextView = (IconTextView) v.findViewById(R.id.post_num_comments);
             //viewHolder.likesTextView = (LikeIconTextView) v.findViewById(R.id.post_num_likes);
             v.setTag(viewHolder);
 
@@ -73,21 +73,20 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
         userView.setText(object.getParseUser("from").getUsername());
 
 
-        IconTextView commentsTextView = (IconTextView) v.findViewById(R.id.post_num_comments);
-        countLoader.loadCommentsCount(object.getObjectId(), commentsTextView);
+        countLoader.loadCommentsCount(object.getObjectId(), viewHolder.commentsTextView);
 
         //viewHolder.likesTextView.setPost((Post) object);
         LikeIconTextView likesTextView = (LikeIconTextView) v.findViewById(R.id.post_num_likes);
         likeCountLoader.loadLikeCount(object.getObjectId(), likesTextView);
-        likesTextView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                LikeIconTextView likeIconTextView = (LikeIconTextView)v;
-                likeIconTextView.toggle();
-                likeCountLoader.setLikeCount(object.getObjectId(), likeIconTextView.getLikeCount());
-                //Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        likesTextView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                LikeIconTextView likeIconTextView = (LikeIconTextView)v;
+//                likeIconTextView.toggle();
+//                likeCountLoader.setLikeCount(object.getObjectId(), likeIconTextView.getLikeCount());
+//                //Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
         return v;
     }
@@ -95,7 +94,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
     // our ViewHolder.
     // caches our TextView
     static class ViewHolderItem {
-        //IconTextView commentsTextView;
+        IconTextView commentsTextView;
         //LikeIconTextView likesTextView;
     }
 
