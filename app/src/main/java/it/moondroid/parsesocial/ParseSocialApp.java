@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import it.moondroid.sociallib.entities.Comment;
+import it.moondroid.sociallib.entities.Like;
 import it.moondroid.sociallib.entities.Post;
 
 /**
@@ -59,6 +60,7 @@ public class ParseSocialApp extends Application {
          */
         ParseObject.registerSubclass(Post.class);
         ParseObject.registerSubclass(Comment.class);
+        ParseObject.registerSubclass(Like.class);
 
         //requires ACCESS_COARSE_LOCATION or ACCESS_FINE_LOCATION permission
 //        final LocationManager mlocManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);

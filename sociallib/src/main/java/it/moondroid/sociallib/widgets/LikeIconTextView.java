@@ -74,7 +74,7 @@ public class LikeIconTextView extends IconTextView {
         }
     }
 
-    public void toggle(){
+    public boolean toggle(){
         isLikedByMe = !isLikedByMe;
         if(isLikedByMe){
             likeCount++;
@@ -82,6 +82,7 @@ public class LikeIconTextView extends IconTextView {
             likeCount--;
         }
         setIconAndCount();
+        return isLikedByMe;
     }
 
     public int getLikeCount(){

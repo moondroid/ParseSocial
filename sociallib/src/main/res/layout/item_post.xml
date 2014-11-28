@@ -70,7 +70,9 @@
             android:layout_alignParentLeft="true"
             android:text="{fa-star-o}"
             android:textSize="20dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:clickable="true"
+            android:focusable="false"/>
 
         <IconTextView
             android:id="@+id/post_num_comments"

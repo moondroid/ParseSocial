@@ -58,7 +58,7 @@ public class AllPostsFragment extends Fragment implements AdapterView.OnItemClic
 
         objectListView.setAdapter(adapter);
         objectListView.setEmptyView(fragmentView.findViewById(R.id.empty_list));
-
+        objectListView.setItemsCanFocus(true);
         objectListView.setOnItemClickListener(this);
 
         return fragmentView;
