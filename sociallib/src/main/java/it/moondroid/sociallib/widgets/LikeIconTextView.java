@@ -19,9 +19,9 @@ import it.moondroid.sociallib.entities.Post;
  */
 public class LikeIconTextView extends IconTextView {
 
-    private Post post = null;
-    private String postId = null;
-    private Like like = null;
+    //private Post post = null;
+//    private String postId = null;
+//    private Like like = null;
     private boolean isLikedByMe = false;
     private int likeCount = 0;
 
@@ -43,36 +43,37 @@ public class LikeIconTextView extends IconTextView {
     private void init(){
 
         setIconAndCount();
-        if(post != null){
-            loadLikeCount();
-            loadIsLikedByMe();
-        }
+//        if(post != null){
+//            loadLikeCount();
+//            loadIsLikedByMe();
+//        }
 
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                if(post != null){
-                    toggle();
-                    if(isLikedByMe){
-                        //addNewLike(); //TODO
-                    }else {
-                        //removeLike(); //TODO
-                    }
-                }
-
-                //Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show();
-            }
-        });
+//        setOnClickListener(new OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//                if(post != null){
+//                    toggle();
+//                    if(isLikedByMe){
+//                        //addNewLike(); //TODO
+//                    }else {
+//                        //removeLike(); //TODO
+//                    }
+//                }
+//
+//                //Toast.makeText(getContext(), "click", Toast.LENGTH_SHORT).show();
+//            }
+//        });
     }
 
-    public void setPost(Post post){
-        this.post = post;
-        if(post != null){
-            loadLikeCount();
-            loadIsLikedByMe();
-        }
-    }
+//    public void setPost(Post post){
+//        this.post = post;
+//        if(post != null){
+//            loadLikeCount();
+//            loadIsLikedByMe();
+//        }
+//    }
+
 
     public boolean toggle(){
         isLikedByMe = !isLikedByMe;
@@ -89,6 +90,20 @@ public class LikeIconTextView extends IconTextView {
         return likeCount;
     }
 
+    public void setLikeCount(int count){
+        likeCount = count;
+        setIconAndCount();
+    }
+
+    public boolean isLikedByMe(){
+        return isLikedByMe;
+    }
+
+    public void setLikedByMe(boolean likedByMe){
+        isLikedByMe = likedByMe;
+        setIconAndCount();
+    }
+
     private void setIconAndCount(){
         if(isLikedByMe){
             setText("{fa-star} "+likeCount);
@@ -97,35 +112,35 @@ public class LikeIconTextView extends IconTextView {
         }
     }
 
-    private void loadLikeCount(){
+//    private void loadLikeCount(){
+//
+//        ParseQuery query = new ParseQuery<ParseObject>("Like");
+//        query.whereEqualTo("post", post);
+//        query.countInBackground(new CountCallback() {
+//            @Override
+//            public void done(int count, ParseException e) {
+//                if(e == null){
+//                    likeCount = count;
+//                    setIconAndCount();
+//                }
+//            }
+//        });
+//    }
 
-        ParseQuery query = new ParseQuery<ParseObject>("Like");
-        query.whereEqualTo("post", post);
-        query.countInBackground(new CountCallback() {
-            @Override
-            public void done(int count, ParseException e) {
-                if(e == null){
-                    likeCount = count;
-                    setIconAndCount();
-                }
-            }
-        });
-    }
-
-    private void loadIsLikedByMe(){
-        ParseQuery query = new ParseQuery<ParseObject>("Like");
-        query.whereEqualTo("from", ParseUser.getCurrentUser());
-        query.whereEqualTo("post", post);
-        query.countInBackground(new CountCallback() {
-            @Override
-            public void done(int count, ParseException e) {
-                if(e == null){
-                    isLikedByMe = count==0? false : true;
-                    setIconAndCount();
-                }
-            }
-        });
-    }
+//    private void loadIsLikedByMe(){
+//        ParseQuery query = new ParseQuery<ParseObject>("Like");
+//        query.whereEqualTo("from", ParseUser.getCurrentUser());
+//        query.whereEqualTo("post", post);
+//        query.countInBackground(new CountCallback() {
+//            @Override
+//            public void done(int count, ParseException e) {
+//                if(e == null){
+//                    isLikedByMe = count==0? false : true;
+//                    setIconAndCount();
+//                }
+//            }
+//        });
+//    }
 
 //    private void addNewLike(){
 //

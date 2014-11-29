@@ -14,15 +14,22 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.parse.FunctionCallback;
 import com.parse.GetCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
+import com.parse.ParseRelation;
+import com.parse.ParseUser;
 import com.parse.SaveCallback;
+
+import java.util.HashMap;
 
 import it.moondroid.sociallib.R;
 import it.moondroid.sociallib.adapters.CommentsQueryAdapter;
 import it.moondroid.sociallib.entities.Comment;
+import it.moondroid.sociallib.entities.Like;
 import it.moondroid.sociallib.entities.Post;
 import it.moondroid.sociallib.widgets.LikeIconTextView;
 import me.drakeet.materialdialog.MaterialDialog;
@@ -76,6 +83,62 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
 
         numComments = (IconTextView) fragmentView.findViewById(R.id.post_num_comments);
         numLikes = (LikeIconTextView) fragmentView.findViewById(R.id.post_num_likes);
+        numLikes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final LikeIconTextView likeIconTextView = (LikeIconTextView)v;
+                final boolean liked = likeIconTextView.toggle();
+
+                if (liked){
+                    Like.addNewLike(post, new Like.LikeCallBack() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(getActivity(), "liked", Toast.LENGTH_SHORT).show();
+                            //updatePost();
+                        }
+
+                        @Override
+                        public void onError(ParseException e) {
+                            Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    Like.removeLike(post, new Like.LikeCallBack() {
+                        @Override
+                        public void onSuccess() {
+                            Toast.makeText(getActivity(), "unliked", Toast.LENGTH_SHORT).show();
+                            //updatePost();
+                        }
+
+                        @Override
+                        public void onError(ParseException e) {
+                            Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+
+//                ParseRelation<ParseObject> relation = post.getRelation("user_likes");
+//                if (liked){
+//                    relation.add(ParseUser.getCurrentUser());
+//                }else {
+//                    relation.remove(ParseUser.getCurrentUser());
+//                }
+//                post.saveInBackground(new SaveCallback() {
+//                    @Override
+//                    public void done(ParseException e) {
+//                        if (e == null) {
+//                            String message = liked? "liked" : "unliked";
+//                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+//                            likeIconTextView.toggle();
+//                        }
+//                        updatePost();
+//                    }
+//                });
+            }
+        });
+
 
         fragmentView.findViewById(R.id.btn_send).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +165,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
 
                                 updatePost();
 
-                                numLikes.setPost(post);
+                                //numLikes.setPost(post);
 
                             } else {
                                 // Failure!
@@ -125,20 +188,61 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
     }
 
 
+//    public void updatePost(){
+//        //adapter.loadObjects();
+//
+//        final String postId = getArguments().getString(KEY_POST_ID);
+//
+//        ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
+//        query.include("from"); //retrieve user also
+//        query.getInBackground(postId, new GetCallback<ParseObject>() {
+//
+//            @Override
+//            public void done(ParseObject parseObject, ParseException e) {
+//                if (e == null) {
+//                    // Success!
+//                    post = (Post) parseObject;
+//                    descriptionView.setText(post.getString("text"));
+//                    android.text.format.DateFormat df = new android.text.format.DateFormat();
+//                    dateView.setText(df.format("dd MMMM - hh:mm", post.getDate("date")));
+//                    userView.setText(post.getParseUser("from").getUsername());
+//
+//                    numComments.setText(String.format(getResources().
+//                            getString(R.string.comments_count), post.getNumber("comments").intValue()));
+//
+//                    numLikes.setLikeCount(post.getNumber("num_likes").intValue());
+////                    ParseRelation likesRelation = post.getRelation("user_likes");
+////                    likesRelation.
+////                    numLikes.setLikedByMe();
+//
+//                    adapter = new CommentsQueryAdapter(getActivity(), post.getObjectId());
+//                    objectListView.setAdapter(adapter);
+//                }else {
+//                    // Failure!
+//                    Log.e("PostDetailFragment.getInBackground.done", "error: " + e.getLocalizedMessage());
+//                    Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//    }
+
     public void updatePost(){
         //adapter.loadObjects();
 
-        String postId = getArguments().getString(KEY_POST_ID);
+        final String postId = getArguments().getString(KEY_POST_ID);
 
-        ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
-        query.include("from"); //retrieve user also
-        query.getInBackground(postId, new GetCallback<ParseObject>() {
+        HashMap<String, Object> params = new HashMap<String, Object>();
+        params.put("postId", postId);
+        //params.put("user", ParseUser.getCurrentUser());
+        ParseCloud.callFunctionInBackground("getPostWithLike", params, new FunctionCallback<Object>() {
 
             @Override
-            public void done(ParseObject parseObject, ParseException e) {
+            public void done(Object result, ParseException e) {
                 if (e == null) {
                     // Success!
-                    post = (Post) parseObject;
+                    HashMap<String , Object> receivedResult = (HashMap<String, Object>)result;
+                    post = (Post) receivedResult.get("post");
+                    boolean isLikedByMe = (boolean) receivedResult.get("isLikedByUser");
                     descriptionView.setText(post.getString("text"));
                     android.text.format.DateFormat df = new android.text.format.DateFormat();
                     dateView.setText(df.format("dd MMMM - hh:mm", post.getDate("date")));
@@ -146,6 +250,9 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
 
                     numComments.setText(String.format(getResources().
                             getString(R.string.comments_count), post.getNumber("comments").intValue()));
+
+                    numLikes.setLikeCount(post.getNumber("num_likes").intValue());
+                    numLikes.setLikedByMe(isLikedByMe);
 
                     adapter = new CommentsQueryAdapter(getActivity(), post.getObjectId());
                     objectListView.setAdapter(adapter);
@@ -156,7 +263,8 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                 }
             }
         });
-    }
 
+
+    }
 
 }

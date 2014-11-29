@@ -1,11 +1,15 @@
 package it.moondroid.sociallib.entities;
 
+import android.widget.Toast;
+
+import com.parse.DeleteCallback;
 import com.parse.FindCallback;
 import com.parse.ParseClassName;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import java.util.Date;
 import java.util.List;
@@ -22,6 +26,23 @@ import java.util.List;
 
 @ParseClassName("Like")
 public class Like extends ParseObject {
+
+    private static LikeCallBack emptyCallBack = new LikeCallBack() {
+        @Override
+        public void onSuccess() {
+            //do nothing
+        }
+
+        @Override
+        public void onError(ParseException e) {
+           //do nothing
+        }
+    };
+
+    public interface LikeCallBack {
+        public void onSuccess();
+        public void onError(ParseException e);
+    }
 
     public Like() {
         // A default constructor is required.
@@ -62,5 +83,55 @@ public class Like extends ParseObject {
         put("date", date);
     }
 
+    public static void addNewLike(final Post post){
+        addNewLike(post, Like.emptyCallBack);
+    }
+
+    public static void addNewLike(final Post post, final LikeCallBack callBack){
+
+        Like like = new Like(post);
+        like.saveInBackground(new SaveCallback() {
+            @Override
+            public void done(ParseException e) {
+                if(e == null){
+                    callBack.onSuccess();
+                }else {
+                    // Failure!
+                    callBack.onError(e);
+                }
+            }
+        });
+    }
+
+    public static void removeLike(final Post post){
+        removeLike(post, Like.emptyCallBack);
+    }
+
+    public static void removeLike(final Post post, final LikeCallBack callBack){
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Like");
+        query.whereEqualTo("post", post);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, ParseException e) {
+                if (e == null && parseObjects.size() > 0){
+                    parseObjects.get(0).deleteInBackground(new DeleteCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null){
+                                callBack.onSuccess();
+                            }else{
+                                // Failure!
+                                callBack.onError(e);
+                            }
+                        }
+                    });
+                }else {
+                    // Failure!
+                    callBack.onError(e);
+                }
+            }
+        });
+
+    }
 
 }
