@@ -20,7 +20,6 @@ import it.moondroid.sociallib.widgets.LikeIconTextView;
  */
 public class PostsQueryAdapter extends ParseQueryAdapter {
 
-    CommentsCountLoader countLoader;
     LikeCountLoader likeCountLoader;
 
     public PostsQueryAdapter(Context context) {
@@ -34,7 +33,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
                 return query;
             }
         });
-        countLoader = new CommentsCountLoader(getContext());
+
         likeCountLoader = new LikeCountLoader(getContext());
     }
 
@@ -74,7 +73,8 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
         userView.setText(object.getParseUser("from").getUsername());
 
 
-        countLoader.loadCommentsCount(object.getObjectId(), viewHolder.commentsTextView);
+        viewHolder.commentsTextView.setText(String.format(getContext().getResources().
+                getString(R.string.comments_count), object.getNumber("comments").intValue()));
 
         //viewHolder.likesTextView.setPost((Post) object);
         //LikeIconTextView likesTextView = (LikeIconTextView) v.findViewById(R.id.post_num_likes);

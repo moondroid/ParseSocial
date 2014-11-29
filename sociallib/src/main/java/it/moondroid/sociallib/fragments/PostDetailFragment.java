@@ -21,7 +21,6 @@ import com.parse.ParseQuery;
 import com.parse.SaveCallback;
 
 import it.moondroid.sociallib.R;
-import it.moondroid.sociallib.adapters.CommentsCountLoader;
 import it.moondroid.sociallib.adapters.CommentsQueryAdapter;
 import it.moondroid.sociallib.entities.Comment;
 import it.moondroid.sociallib.entities.Post;
@@ -60,7 +59,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
 
-        update();
+        updatePost();
     }
 
     @Nullable
@@ -100,9 +99,8 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                                 Log.d("PostDetailFragment.saveInBackground.done", "objectId: "+objectId);
                                 Toast.makeText(getActivity(), "comment added", Toast.LENGTH_SHORT).show();
                                 editTextComment.setText("");
-                                adapter.loadObjects();
-                                CommentsCountLoader task = new CommentsCountLoader(getActivity());
-                                task.loadCommentsCount(post.getObjectId(), numComments, true);
+
+                                updatePost();
 
                                 numLikes.setPost(post);
 
@@ -127,7 +125,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
     }
 
 
-    public void update(){
+    public void updatePost(){
         //adapter.loadObjects();
 
         String postId = getArguments().getString(KEY_POST_ID);
@@ -145,8 +143,9 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                     android.text.format.DateFormat df = new android.text.format.DateFormat();
                     dateView.setText(df.format("dd MMMM - hh:mm", post.getDate("date")));
                     userView.setText(post.getParseUser("from").getUsername());
-                    CommentsCountLoader task = new CommentsCountLoader(getActivity());
-                    task.loadCommentsCount(post.getObjectId(), numComments);
+
+                    numComments.setText(String.format(getResources().
+                            getString(R.string.comments_count), post.getNumber("comments").intValue()));
 
                     adapter = new CommentsQueryAdapter(getActivity(), post.getObjectId());
                     objectListView.setAdapter(adapter);
