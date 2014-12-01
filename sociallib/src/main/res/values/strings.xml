@@ -3,4 +3,5 @@
     <string name="comments_count">{fa-comment-o} %1$d</string>
     <string name="likes_count">{fa-star-o} %1$d</string>
     <string name="likes_count_liked">{fa-star} %1$d</string>
+    <string name="action_delete">Delete</string>
 </resources>

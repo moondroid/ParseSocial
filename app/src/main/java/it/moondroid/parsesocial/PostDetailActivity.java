@@ -5,12 +5,15 @@ import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Toast;
 
 import it.moondroid.sociallib.fragments.AllPostsFragment;
 import it.moondroid.sociallib.fragments.PostDetailFragment;
+import me.drakeet.materialdialog.MaterialDialog;
 
 
-public class PostDetailActivity extends ActionBarActivity {
+public class PostDetailActivity extends ActionBarActivity implements PostDetailFragment.OnPostDetailListener {
 
     public static final String EXTRA_POST_ID = "PostDetailActivity.EXTRA_POST_ID";
     private PostDetailFragment postFragment;
@@ -38,7 +41,7 @@ public class PostDetailActivity extends ActionBarActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_post_detail, menu);
+        //getMenuInflater().inflate(R.menu.menu_post_detail, menu);
         return true;
     }
 
@@ -49,11 +52,6 @@ public class PostDetailActivity extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         // Respond to the action bar's Up/Home button
         if (id == android.R.id.home) {
             NavUtils.navigateUpFromSameTask(this);
@@ -61,5 +59,11 @@ public class PostDetailActivity extends ActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPostDeleted() {
+        Toast.makeText(this, "deleted", Toast.LENGTH_SHORT).show();
+        NavUtils.navigateUpFromSameTask(this);
     }
 }
