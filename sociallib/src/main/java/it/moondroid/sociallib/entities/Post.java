@@ -46,6 +46,14 @@ public class Post extends ParseObject {
         put("date", date);
     }
 
+    public int getNumComments(){
+        return getNumber("comments").intValue();
+    }
+
+    public int getNumLikes(){
+        return getNumber("num_likes").intValue();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

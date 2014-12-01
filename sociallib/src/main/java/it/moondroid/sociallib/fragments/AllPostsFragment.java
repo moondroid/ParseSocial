@@ -1,27 +1,32 @@
 package it.moondroid.sociallib.fragments;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
 
 import it.moondroid.sociallib.R;
-import it.moondroid.sociallib.adapters.PostsQueryAdapter;
+import it.moondroid.sociallib.adapters.OnRecyclerViewItemClickListener;
+import it.moondroid.sociallib.adapters.PostsRecyclerViewAdapter;
 
 /**
  * Created by marco.granatiero on 24/11/2014.
  */
-public class AllPostsFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class AllPostsFragment extends Fragment implements OnRecyclerViewItemClickListener {
 
-    private PostsQueryAdapter adapter;
+    private PostsRecyclerViewAdapter mAdapter;
+    protected RecyclerView mRecyclerView;
+    protected RecyclerView.LayoutManager mLayoutManager;
 
     private OnPostSelectedListener mListener;
+
+
 
     public interface OnPostSelectedListener {
         public void onPostSelected(String postId);
@@ -51,28 +56,33 @@ public class AllPostsFragment extends Fragment implements AdapterView.OnItemClic
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View fragmentView = inflater.inflate(R.layout.fragment_all_posts, container, false);
 
-        ListView objectListView = (ListView)fragmentView.findViewById(R.id.objects_list);
-        adapter = new PostsQueryAdapter(getActivity());
-        //adapter.setTextKey("text");
-        //adapter.setImageKey("photo");
+        mRecyclerView = (RecyclerView)fragmentView.findViewById(R.id.post_list);
 
-        objectListView.setAdapter(adapter);
-        objectListView.setEmptyView(fragmentView.findViewById(R.id.empty_list));
-        objectListView.setItemsCanFocus(true);
-        objectListView.setOnItemClickListener(this);
+        // LinearLayoutManager is used here, this will layout the elements in a similar fashion
+        // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
+        // elements are laid out.
+        mLayoutManager = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        mAdapter = new PostsRecyclerViewAdapter(getActivity());
+        mRecyclerView.setAdapter(mAdapter);
+
+//        mRecyclerView.setEmptyView(fragmentView.findViewById(R.id.empty_list));
+        mAdapter.setOnItemClickListener(this);
 
         return fragmentView;
     }
 
+
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String postId = adapter.getItem(position).getObjectId();
+    public void onItemClick(View view, int position) {
+        String postId = mAdapter.getItem(position).getObjectId();
         mListener.onPostSelected(postId);
+        Log.d("AllPostsFragment", "onPostClick " + position);
     }
 
-
     public void update(){
-        adapter.loadObjects();
+        mAdapter.loadObjects();
     }
 
 
