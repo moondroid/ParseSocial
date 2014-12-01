@@ -65,31 +65,20 @@ public class AllPostsActivity extends ActionBarActivity implements AllPostsFragm
 
         if (id == R.id.action_add_post) {
 
-            new CreatePostDialogFragment.Builder(this).setSendPostButton(new CreatePostDialogInterface.OnClickListener() {
+            new CreatePostDialogFragment.Builder(this).setSendPostResultListener(new CreatePostDialogInterface.OnResultListener() {
                 @Override
-                public void onClick(CreatePostDialogInterface dialog, int which) {
+                public void onSuccess() {
+                    Toast.makeText(AllPostsActivity.this, "post pubblicato", Toast.LENGTH_SHORT).show();
+                    postsFragment.update();
+                }
 
-                    final MaterialDialog pd = new MaterialDialog(AllPostsActivity.this)
-//                            .setTitle("Processing...")
-//                            .setMessage("Please wait.")
-                            .setContentView(getLayoutInflater().inflate(R.layout.dialog_indeterminate, null))
-                            .setCanceledOnTouchOutside(false);
-                    pd.show();
-
-                    Post post = new Post(dialog.getContentText());
-                    post.saveInBackground(new SaveCallback() {
-                        @Override
-                        public void done(ParseException e) {
-                            pd.dismiss();
-                            if (e == null) {
-                                Toast.makeText(AllPostsActivity.this, "post pubblicato", Toast.LENGTH_SHORT).show();
-                                postsFragment.update();
-                            }
-                        }
-                    });
-
+                @Override
+                public void onError(ParseException e) {
+                    Toast.makeText(AllPostsActivity.this, "error", Toast.LENGTH_SHORT).show();
                 }
             }).show();
+
+
         }
 
         return super.onOptionsItemSelected(item);

@@ -11,10 +11,15 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.parse.ParseException;
 import com.parse.ParseUser;
+import com.parse.SaveCallback;
 
 import it.moondroid.sociallib.R;
+import it.moondroid.sociallib.entities.Post;
+import me.drakeet.materialdialog.MaterialDialog;
 
 /**
  * Created by marco.granatiero on 24/11/2014.
@@ -26,6 +31,7 @@ public class CreatePostDialogFragment extends DialogFragment implements CreatePo
     private View mView;
 
     private CreatePostDialogInterface.OnClickListener mSendPostButtonListener;
+    private OnResultListener mSendPostResultListener;
 
 
     public CreatePostDialogFragment() {
@@ -62,10 +68,6 @@ public class CreatePostDialogFragment extends DialogFragment implements CreatePo
         dialog.setContentView(view);
     }
 
-    @Override
-    public String getContentText(){
-        return postContentText.getText().toString();
-    }
 
     public void show() {
         dialog.show();
@@ -85,7 +87,27 @@ public class CreatePostDialogFragment extends DialogFragment implements CreatePo
                 if (mSendPostButtonListener != null) {
                     mSendPostButtonListener.onClick(CreatePostDialogFragment.this, CreatePostDialogInterface.BUTTON_SEND_POST);
                 }
-                dialog.dismiss();
+
+                final MaterialDialog pd = new MaterialDialog(getDialog().getContext())
+                        .setContentView((getDialog().getLayoutInflater().inflate(R.layout.dialog_indeterminate, null)));
+                pd.setCanceledOnTouchOutside(false);
+                pd.show();
+
+                Post post = new Post(postContentText.getText().toString());
+                post.saveInBackground(new SaveCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        pd.dismiss();
+                        dialog.dismiss();
+                        if (e == null) {
+                            mSendPostResultListener.onSuccess();
+                        }else {
+                            mSendPostResultListener.onError(e);
+                        }
+                    }
+                });
+
+
             }
         });
 
@@ -102,6 +124,7 @@ public class CreatePostDialogFragment extends DialogFragment implements CreatePo
         private View view;
         private boolean cancelable = true;
         private CreatePostDialogInterface.OnClickListener sendPostButtonListener;
+        private OnResultListener sendPostResultListener;
 
         public Builder(Context context) {
             this.context = context;
@@ -142,9 +165,15 @@ public class CreatePostDialogFragment extends DialogFragment implements CreatePo
             return this;
         }
 
+        public Builder setSendPostResultListener(final OnResultListener listener) {
+            this.sendPostResultListener = listener;
+            return this;
+        }
+
         public CreatePostDialogFragment create() {
             final CreatePostDialogFragment dialog = new CreatePostDialogFragment();
             dialog.mSendPostButtonListener = sendPostButtonListener;
+            dialog.mSendPostResultListener = sendPostResultListener;
             dialog.mView = view;
             dialog.setCancelable(cancelable);
 
