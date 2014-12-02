@@ -11,22 +11,28 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
+import com.parse.ParseException;
 
 import it.moondroid.sociallib.R;
 import it.moondroid.sociallib.adapters.OnRecyclerViewItemClickListener;
+import it.moondroid.sociallib.adapters.OnRecyclerViewPostClickListener;
 import it.moondroid.sociallib.adapters.PostsRecyclerViewAdapter;
+import it.moondroid.sociallib.entities.Like;
+import it.moondroid.sociallib.entities.Post;
+import it.moondroid.sociallib.widgets.LikeIconTextView;
 
 /**
  * Created by marco.granatiero on 24/11/2014.
  */
-public class AllPostsFragment extends Fragment implements OnRecyclerViewItemClickListener {
+public class AllPostsFragment extends Fragment implements OnRecyclerViewPostClickListener {
 
     private PostsRecyclerViewAdapter mAdapter;
     protected RecyclerView mRecyclerView;
     protected RecyclerView.LayoutManager mLayoutManager;
 
     private OnPostSelectedListener mListener;
-
 
 
     public interface OnPostSelectedListener {
@@ -81,6 +87,27 @@ public class AllPostsFragment extends Fragment implements OnRecyclerViewItemClic
         String postId = mAdapter.getItem(position).getObjectId();
         mListener.onPostSelected(postId);
         Log.d("AllPostsFragment", "onPostClick " + position);
+    }
+
+    @Override
+    public void onLikeClick(View view, int position) {
+        Log.d("AllPostsFragment", "onLikeClick " + position);
+        Post post = mAdapter.getItem(position);
+        final LikeIconTextView likeIconTextView = (LikeIconTextView)view;
+        final boolean liked = likeIconTextView.toggle();
+
+        Like.toggleLike(post, liked, new Like.LikeCallBack() {
+            @Override
+            public void onSuccess(boolean liked) {
+                String message = liked? "liked" : "unliked";
+                Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(ParseException e) {
+                Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     public void update(){

@@ -33,7 +33,7 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
     private Context mContext;
     private ArrayList<Post> mDataSet = new ArrayList<>();
 
-    private static OnRecyclerViewItemClickListener mListener;
+    private static OnRecyclerViewPostClickListener mListener;
 
 
     /**
@@ -56,6 +56,7 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
             mLikesTextView = (LikeIconTextView) v.findViewById(R.id.post_num_likes);
 
             v.setOnClickListener(this);
+            mLikesTextView.setOnClickListener(this);
         }
 
         public TextView getDescriptionTextView() {
@@ -83,6 +84,9 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
             if (v.getId() == R.id.post_container){
                 mListener.onItemClick(v, getPosition());
             }
+            if (v.getId() == R.id.post_num_likes){
+                mListener.onLikeClick(v, getPosition());
+            }
         }
     }
 
@@ -91,11 +95,16 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
      */
     public PostsRecyclerViewAdapter(Context context) {
         mContext = context;
-        mListener = new OnRecyclerViewItemClickListener() {
+        mListener = new OnRecyclerViewPostClickListener() {
 
             @Override
             public void onItemClick(View view, int position) {
                 Log.d("RecyclerViewCustomAdapter", "onPostClick "+position);
+            }
+
+            @Override
+            public void onLikeClick(View view, int position) {
+                Log.d("RecyclerViewCustomAdapter", "onLikeClick "+position);
             }
         };
         loadObjects();
@@ -135,7 +144,7 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
         return mDataSet.size();
     }
 
-    public void setOnItemClickListener(OnRecyclerViewItemClickListener listener){
+    public void setOnItemClickListener(OnRecyclerViewPostClickListener listener){
         if(listener != null){
             mListener = listener;
         }

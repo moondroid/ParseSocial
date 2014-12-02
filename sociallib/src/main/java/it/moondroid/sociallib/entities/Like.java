@@ -29,7 +29,7 @@ public class Like extends ParseObject {
 
     private static LikeCallBack emptyCallBack = new LikeCallBack() {
         @Override
-        public void onSuccess() {
+        public void onSuccess(boolean liked) {
             //do nothing
         }
 
@@ -40,7 +40,7 @@ public class Like extends ParseObject {
     };
 
     public interface LikeCallBack {
-        public void onSuccess();
+        public void onSuccess(boolean liked);
         public void onError(ParseException e);
     }
 
@@ -83,6 +83,18 @@ public class Like extends ParseObject {
         put("date", date);
     }
 
+    public static void toggleLike(final Post post, boolean liked){
+        toggleLike(post, liked, Like.emptyCallBack);
+    }
+
+    public static void toggleLike(final Post post, boolean liked, final LikeCallBack callBack){
+        if(liked){
+            addNewLike(post, callBack);
+        }else {
+            removeLike(post, callBack);
+        }
+    }
+
     public static void addNewLike(final Post post){
         addNewLike(post, Like.emptyCallBack);
     }
@@ -94,7 +106,7 @@ public class Like extends ParseObject {
             @Override
             public void done(ParseException e) {
                 if(e == null){
-                    callBack.onSuccess();
+                    callBack.onSuccess(true);
                 }else {
                     // Failure!
                     callBack.onError(e);
@@ -118,7 +130,7 @@ public class Like extends ParseObject {
                         @Override
                         public void done(ParseException e) {
                             if (e == null){
-                                callBack.onSuccess();
+                                callBack.onSuccess(false);
                             }else{
                                 // Failure!
                                 callBack.onError(e);

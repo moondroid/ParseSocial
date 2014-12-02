@@ -166,53 +166,19 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                 final LikeIconTextView likeIconTextView = (LikeIconTextView)v;
                 final boolean liked = likeIconTextView.toggle();
 
-                if (liked){
-                    Like.addNewLike(post, new Like.LikeCallBack() {
-                        @Override
-                        public void onSuccess() {
-                            Toast.makeText(getActivity(), "liked", Toast.LENGTH_SHORT).show();
-                            //updatePost();
-                        }
+                Like.toggleLike(post, liked, new Like.LikeCallBack() {
+                    @Override
+                    public void onSuccess(boolean liked) {
+                        String message = liked? "liked" : "unliked";
+                        Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
+                    }
 
-                        @Override
-                        public void onError(ParseException e) {
-                            Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }else {
-                    Like.removeLike(post, new Like.LikeCallBack() {
-                        @Override
-                        public void onSuccess() {
-                            Toast.makeText(getActivity(), "unliked", Toast.LENGTH_SHORT).show();
-                            //updatePost();
-                        }
+                    @Override
+                    public void onError(ParseException e) {
+                        Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
-                        @Override
-                        public void onError(ParseException e) {
-                            Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-
-//                ParseRelation<ParseObject> relation = post.getRelation("user_likes");
-//                if (liked){
-//                    relation.add(ParseUser.getCurrentUser());
-//                }else {
-//                    relation.remove(ParseUser.getCurrentUser());
-//                }
-//                post.saveInBackground(new SaveCallback() {
-//                    @Override
-//                    public void done(ParseException e) {
-//                        if (e == null) {
-//                            String message = liked? "liked" : "unliked";
-//                            Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
-//                            likeIconTextView.toggle();
-//                        }
-//                        updatePost();
-//                    }
-//                });
             }
         });
 
