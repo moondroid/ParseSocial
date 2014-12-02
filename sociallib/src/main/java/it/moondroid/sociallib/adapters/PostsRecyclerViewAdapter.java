@@ -12,11 +12,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.parse.FindCallback;
+import com.parse.FunctionCallback;
+import com.parse.ParseCloud;
 import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import it.moondroid.sociallib.R;
@@ -124,7 +127,7 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        Log.d(TAG, "Element " + position + " set.");
+        //Log.d(TAG, "Element " + position + " set.");
 
         // Get element from your dataset at this position and replace the contents of the view
         // with that element
@@ -135,6 +138,7 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
         viewHolder.getCommentsIconTextView().setText(String.format(mContext.getResources().
                 getString(R.string.comments_count), mDataSet.get(position).getNumComments()));
         viewHolder.getLikesIconTextView().setLikeCount(mDataSet.get(position).getNumLikes());
+        viewHolder.getLikesIconTextView().setLikedByMe(mDataSet.get(position).isLikedByMe());
     }
 
 
@@ -157,6 +161,7 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
     public void loadObjects(){
         ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
         query.include("from"); //retrieve user also
+        query.include("user_array_likes"); //retrieve user likes also
         query.orderByDescending("date"); //lastest posts first
         query.findInBackground(new FindCallback<ParseObject>() {
             @Override
@@ -172,11 +177,24 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
 
                 }else {
                     // Failure!
-                    Log.e("ReadObjectsActivity.findInBackground.done", "error: " + e.getLocalizedMessage());
+                    Log.e("PostsRecyclerViewAdapter.findInBackground.done", "error: " + e.getLocalizedMessage());
                     Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
                 }
 
             }
         });
+
+//        HashMap<String, Object> params = new HashMap<String, Object>();
+//        ParseCloud.callFunctionInBackground("getPostsWithLike", params, new FunctionCallback<Object>() {
+//
+//            @Override
+//            public void done(Object o, ParseException e) {
+//                if (e != null){
+//                    // Failure!
+//                    Log.e("PostsRecyclerViewAdapter.callFunctionInBackground.done", "error: " + e.getLocalizedMessage());
+//                    Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
     }
 }

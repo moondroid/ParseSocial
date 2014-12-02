@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -231,71 +232,31 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
     }
 
 
-//    public void updatePost(){
-//        //adapter.loadObjects();
-//
-//        final String postId = getArguments().getString(KEY_POST_ID);
-//
-//        ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
-//        query.include("from"); //retrieve user also
-//        query.getInBackground(postId, new GetCallback<ParseObject>() {
-//
-//            @Override
-//            public void done(ParseObject parseObject, ParseException e) {
-//                if (e == null) {
-//                    // Success!
-//                    post = (Post) parseObject;
-//                    descriptionView.setText(post.getString("text"));
-//                    android.text.format.DateFormat df = new android.text.format.DateFormat();
-//                    dateView.setText(df.format("dd MMMM - hh:mm", post.getDate("date")));
-//                    userView.setText(post.getParseUser("from").getUsername());
-//
-//                    numComments.setText(String.format(getResources().
-//                            getString(R.string.comments_count), post.getNumber("comments").intValue()));
-//
-//                    numLikes.setLikeCount(post.getNumber("num_likes").intValue());
-////                    ParseRelation likesRelation = post.getRelation("user_likes");
-////                    likesRelation.
-////                    numLikes.setLikedByMe();
-//
-//                    adapter = new CommentsQueryAdapter(getActivity(), post.getObjectId());
-//                    objectListView.setAdapter(adapter);
-//                }else {
-//                    // Failure!
-//                    Log.e("PostDetailFragment.getInBackground.done", "error: " + e.getLocalizedMessage());
-//                    Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//    }
-
     public void updatePost(){
         //adapter.loadObjects();
 
         final String postId = getArguments().getString(KEY_POST_ID);
 
-        HashMap<String, Object> params = new HashMap<String, Object>();
-        params.put("postId", postId);
-        //params.put("user", ParseUser.getCurrentUser());
-        ParseCloud.callFunctionInBackground("getPostWithLike", params, new FunctionCallback<Object>() {
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("Post");
+        query.include("from"); //retrieve user also
+        query.include("user_array_likes"); //retrieve user likes also
+        query.getInBackground(postId, new GetCallback<ParseObject>() {
 
             @Override
-            public void done(Object result, ParseException e) {
+            public void done(ParseObject parseObject, ParseException e) {
                 if (e == null) {
                     // Success!
-                    HashMap<String , Object> receivedResult = (HashMap<String, Object>)result;
-                    post = (Post) receivedResult.get("post");
-                    boolean isLikedByMe = (boolean) receivedResult.get("isLikedByUser");
-                    descriptionView.setText(post.getString("text"));
-                    android.text.format.DateFormat df = new android.text.format.DateFormat();
-                    dateView.setText(df.format("dd MMMM - hh:mm", post.getDate("date")));
-                    userView.setText(post.getParseUser("from").getUsername());
+                    post = (Post) parseObject;
+                    descriptionView.setText(post.getText());
+                    String dateString = DateUtils.getRelativeTimeSpanString(getActivity(), post.getDate().getTime()).toString();
+                    dateView.setText(dateString);
+                    userView.setText(post.getFromUser().getUsername());
 
                     numComments.setText(String.format(getResources().
-                            getString(R.string.comments_count), post.getNumber("comments").intValue()));
+                            getString(R.string.comments_count), post.getNumComments()));
 
-                    numLikes.setLikeCount(post.getNumber("num_likes").intValue());
-                    numLikes.setLikedByMe(isLikedByMe);
+                    numLikes.setLikeCount(post.getNumLikes());
+                    numLikes.setLikedByMe(post.isLikedByMe());
 
                     adapter = new CommentsQueryAdapter(getActivity(), post.getObjectId());
                     objectListView.setAdapter(adapter);
@@ -306,8 +267,47 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                 }
             }
         });
-
-
     }
+
+//    public void updatePost(){
+//        //adapter.loadObjects();
+//
+//        final String postId = getArguments().getString(KEY_POST_ID);
+//
+//        HashMap<String, Object> params = new HashMap<String, Object>();
+//        params.put("postId", postId);
+//        //params.put("user", ParseUser.getCurrentUser());
+//        ParseCloud.callFunctionInBackground("getPostWithLike", params, new FunctionCallback<Object>() {
+//
+//            @Override
+//            public void done(Object result, ParseException e) {
+//                if (e == null) {
+//                    // Success!
+//                    HashMap<String , Object> receivedResult = (HashMap<String, Object>)result;
+//                    post = (Post) receivedResult.get("post");
+//                    boolean isLikedByMe = (boolean) receivedResult.get("isLikedByMe");
+//                    descriptionView.setText(post.getString("text"));
+//                    android.text.format.DateFormat df = new android.text.format.DateFormat();
+//                    dateView.setText(df.format("dd MMMM - hh:mm", post.getDate("date")));
+//                    userView.setText(post.getParseUser("from").getUsername());
+//
+//                    numComments.setText(String.format(getResources().
+//                            getString(R.string.comments_count), post.getNumber("comments").intValue()));
+//
+//                    numLikes.setLikeCount(post.getNumber("num_likes").intValue());
+//                    numLikes.setLikedByMe(isLikedByMe);
+//
+//                    adapter = new CommentsQueryAdapter(getActivity(), post.getObjectId());
+//                    objectListView.setAdapter(adapter);
+//                }else {
+//                    // Failure!
+//                    Log.e("PostDetailFragment.getInBackground.done", "error: " + e.getLocalizedMessage());
+//                    Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+//                }
+//            }
+//        });
+//
+//
+//    }
 
 }

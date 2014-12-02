@@ -4,6 +4,7 @@ import com.parse.ParseClassName;
 import com.parse.ParseObject;
 import com.parse.ParseUser;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -54,6 +55,21 @@ public class Post extends ParseObject {
 
     public int getNumLikes(){
         return getNumber("num_likes").intValue();
+    }
+
+    public ArrayList<ParseUser> getUserLikes(){
+        return  (ArrayList<ParseUser>) get("user_array_likes");
+    }
+
+    public boolean isLikedByMe(){
+        ArrayList<ParseUser> users = getUserLikes();
+        String currentUserId = ParseUser.getCurrentUser().getObjectId();
+        for(ParseUser user : users){
+            if (user.getObjectId().equals(currentUserId)){
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
