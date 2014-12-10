@@ -28,6 +28,12 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="Google+"
+            android:id="@+id/button_gplus" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Saving Object"
             android:id="@+id/button_save_object" />
 

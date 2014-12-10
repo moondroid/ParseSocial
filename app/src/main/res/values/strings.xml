@@ -10,5 +10,6 @@
     <string name="title_activity_read_objects">ReadObjectsActivity</string>
     <string name="title_activity_all_posts">AllPostsActivity</string>
     <string name="title_activity_post_detail">PostDetailActivity</string>
+    <string name="title_activity_google_plus">GooglePlusActivity</string>
 
 </resources>
