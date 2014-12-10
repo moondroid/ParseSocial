@@ -2,51 +2,38 @@ package it.moondroid.parsesocial;
 
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.os.Build;
 
-import it.moondroid.sociallib.fragments.GooglePlusFragment;
+import com.google.android.gms.plus.model.people.Person;
+
+import it.moondroid.sociallib.fragments.GooglePlusLoginFragment;
 
 
-public class GooglePlusActivity extends ActionBarActivity {
+public class GooglePlusActivity extends ActionBarActivity implements GooglePlusLoginFragment.GooglePlusLoginCallback {
 
-    GooglePlusFragment googlePlusFragment;
+    GooglePlusLoginFragment googlePlusFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_google_plus);
         if (savedInstanceState == null) {
-            googlePlusFragment = new GooglePlusFragment();
+            googlePlusFragment = new GooglePlusLoginFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.container, googlePlusFragment, "GooglePlusFragment")
                     .commit();
         }else {
-            googlePlusFragment = (GooglePlusFragment) getSupportFragmentManager()
+            googlePlusFragment = (GooglePlusLoginFragment) getSupportFragmentManager()
                     .findFragmentByTag("GooglePlusFragment");
         }
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-
-//        if (requestCode == GooglePlusFragment.REQUEST_CODE_SIGN_IN
-//                || requestCode == GooglePlusFragment.REQUEST_CODE_GET_GOOGLE_PLAY_SERVICES){
-//            GooglePlusFragment fragment = (GooglePlusFragment) getSupportFragmentManager()
-//                    .findFragmentByTag("GooglePlusFragment");
-//            fragment.onActivityResult(requestCode, resultCode, data);
-//        } else {
-//            super.onActivityResult(requestCode, resultCode, data);
-//        }
-        googlePlusFragment.onActivityResult(requestCode, resultCode, data);
         super.onActivityResult(requestCode, resultCode, data);
+        googlePlusFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -71,4 +58,13 @@ public class GooglePlusActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onGooglePlusConnected(Person person) {
+
+    }
+
+    @Override
+    public void onGooglePlusDisconnected() {
+
+    }
 }

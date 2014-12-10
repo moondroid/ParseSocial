@@ -32,10 +32,10 @@ import it.moondroid.sociallib.R;
 /**
  * Created by marco.granatiero on 09/12/2014.
  */
-public class GooglePlusFragment extends Fragment implements View.OnClickListener,
+public class GooglePlusLoginFragment extends Fragment implements View.OnClickListener,
         GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
-    private static final String TAG  = "GooglePlusFragment";
+    private static final String TAG  = "GooglePlusLoginFragment";
     private static final int DIALOG_GET_GOOGLE_PLAY_SERVICES = 1;
     private static final int REQUEST_CODE_SIGN_IN = 1;
     private static final int REQUEST_CODE_GET_GOOGLE_PLAY_SERVICES = 2;
@@ -60,6 +60,37 @@ public class GooglePlusFragment extends Fragment implements View.OnClickListener
      * Tracks whether a resolution Intent is in progress.
      */
     private boolean mIntentInProgress;
+
+    private GooglePlusLoginCallback mListener;
+
+    public interface GooglePlusLoginCallback {
+        public void onGooglePlusConnected(Person person);
+        public void onGooglePlusDisconnected();
+    }
+
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        try {
+            mListener = (GooglePlusLoginCallback) activity;
+        } catch (ClassCastException e) {
+            mListener = new GooglePlusLoginCallback() {
+                @Override
+                public void onGooglePlusConnected(Person person) {
+                    //do nothing
+                }
+
+                @Override
+                public void onGooglePlusDisconnected() {
+                    //do nothing
+                }
+            };
+        }
+    }
+
+    public GooglePlusLoginFragment() {
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -211,6 +242,7 @@ public class GooglePlusFragment extends Fragment implements View.OnClickListener
             mSignInButton.setVisibility(View.INVISIBLE);
             mSignOutButton.setEnabled(true);
             mRevokeAccessButton.setEnabled(true);
+            mListener.onGooglePlusConnected(Plus.PeopleApi.getCurrentPerson(mGoogleApiClient));
         } else {
             if (mConnectionResult == null) {
                 // Disable the sign-in button until onConnectionFailed is called with result.
@@ -224,6 +256,8 @@ public class GooglePlusFragment extends Fragment implements View.OnClickListener
 
             mSignOutButton.setEnabled(false);
             mRevokeAccessButton.setEnabled(false);
+
+            mListener.onGooglePlusDisconnected();
         }
     }
 
