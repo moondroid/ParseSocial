@@ -3,19 +3,27 @@ package it.moondroid.parsesocial;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.model.GraphUser;
+import com.parse.LogInCallback;
 import com.parse.ParseAnalytics;
+import com.parse.ParseException;
+import com.parse.ParseFacebookUtils;
 import com.parse.ParseUser;
 
 
 public class MainActivity extends ActionBarActivity {
 
     private static final int REQUEST_CODE_LOGIN = 1;
+    private static final int REQUEST_CODE_FACEBOOK_LOGIN = 2;
 
     private Button btnLogin;
     private TextView textUserName;
@@ -61,6 +69,33 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
+        findViewById(R.id.button_facebook).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ParseFacebookUtils.logIn(MainActivity.this, REQUEST_CODE_FACEBOOK_LOGIN, new LogInCallback() {
+                    @Override
+                    public void done(ParseUser user, ParseException err) {
+                        if (user == null) {
+                            Log.d("MyApp", "Uh oh. The user cancelled the Facebook login.");
+                        } else if (user.isNew()) {
+                            Log.d("MyApp", "User signed up and logged in through Facebook!");
+                            Log.d("MyApp", "user: "+user.getUsername()+" "+user.getEmail());
+                        } else {
+                            Log.d("MyApp", "User logged in through Facebook!");
+                            Log.d("MyApp", "user: "+user.getUsername()+" "+user.getEmail());
+
+                            Request.newMeRequest(ParseFacebookUtils.getSession(),
+                                    new Request.GraphUserCallback() {
+                                        @Override
+                                        public void onCompleted(GraphUser fbUser, Response response) {
+                                            Log.d("MyApp", "fbUser: "+fbUser.getUsername()+" "+fbUser.getLink());
+                                        }
+                                    });
+                        }
+                    }
+                });
+            }
+        });
     }
 
 
@@ -89,6 +124,11 @@ public class MainActivity extends ActionBarActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == REQUEST_CODE_LOGIN && resultCode == RESULT_OK){
+            updateLoginState();
+        }
+
+        if(requestCode == REQUEST_CODE_FACEBOOK_LOGIN && resultCode == RESULT_OK){
+            ParseFacebookUtils.finishAuthentication(requestCode, resultCode, data);
             updateLoginState();
         }
     }
