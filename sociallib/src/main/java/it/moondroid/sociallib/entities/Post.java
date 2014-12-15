@@ -13,6 +13,10 @@ import java.util.Date;
 @ParseClassName("Post")
 public class Post extends ParseObject {
 
+    private Integer numLikes = null;
+    private Boolean isLikedByMe = null;
+
+
     public Post() {
         // A default constructor is required.
     }
@@ -54,7 +58,15 @@ public class Post extends ParseObject {
     }
 
     public int getNumLikes(){
-        return getNumber("num_likes").intValue();
+        if(numLikes == null){
+            return getNumber("num_likes").intValue();
+        }else{
+            return numLikes;
+        }
+    }
+
+    public void setNumLikes(int numLikes){
+        this.numLikes = numLikes;
     }
 
     public ArrayList<ParseUser> getUserLikes(){
@@ -62,14 +74,23 @@ public class Post extends ParseObject {
     }
 
     public boolean isLikedByMe(){
-        ArrayList<ParseUser> users = getUserLikes();
-        String currentUserId = ParseUser.getCurrentUser().getObjectId();
-        for(ParseUser user : users){
-            if (user.getObjectId().equals(currentUserId)){
-                return true;
+        if(isLikedByMe==null){
+            ArrayList<ParseUser> users = getUserLikes();
+            String currentUserId = ParseUser.getCurrentUser().getObjectId();
+            for(ParseUser user : users){
+                if (user.getObjectId().equals(currentUserId)){
+                    return true;
+                }
             }
+            return false;
+        }else {
+            return isLikedByMe;
         }
-        return false;
+
+    }
+
+    public void setIsLikedByMe(boolean isLikedByMe){
+        this.isLikedByMe = isLikedByMe;
     }
 
     @Override

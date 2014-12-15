@@ -95,6 +95,9 @@ public class AllPostsFragment extends Fragment implements OnRecyclerViewPostClic
         Post post = mAdapter.getItem(position);
         final LikeIconTextView likeIconTextView = (LikeIconTextView)view;
         final boolean liked = likeIconTextView.toggle();
+        post.setIsLikedByMe(liked);
+        post.setNumLikes(likeIconTextView.getLikeCount());
+        mAdapter.setItem(post, position);
 
         Like.toggleLike(post, liked, new Like.LikeCallBack() {
             @Override
@@ -106,6 +109,7 @@ public class AllPostsFragment extends Fragment implements OnRecyclerViewPostClic
             @Override
             public void onError(ParseException e) {
                 Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+                likeIconTextView.toggle();
             }
         });
     }

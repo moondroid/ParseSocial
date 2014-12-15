@@ -177,6 +177,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                     @Override
                     public void onError(ParseException e) {
                         Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+                        likeIconTextView.toggle();
                     }
                 });
 

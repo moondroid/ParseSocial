@@ -137,6 +137,7 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
         viewHolder.getDateTextView().setText(dateString);
         viewHolder.getCommentsIconTextView().setText(String.format(mContext.getResources().
                 getString(R.string.comments_count), mDataSet.get(position).getNumComments()));
+
         viewHolder.getLikesIconTextView().setLikeCount(mDataSet.get(position).getNumLikes());
         viewHolder.getLikesIconTextView().setLikedByMe(mDataSet.get(position).isLikedByMe());
     }
@@ -156,6 +157,10 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
 
     public Post getItem(int position){
         return mDataSet.get(position);
+    }
+
+    public void setItem(Post post, int position){
+        mDataSet.set(position, post);
     }
 
     public void loadObjects(){
@@ -184,17 +189,6 @@ public class PostsRecyclerViewAdapter extends RecyclerView.Adapter<PostsRecycler
             }
         });
 
-//        HashMap<String, Object> params = new HashMap<String, Object>();
-//        ParseCloud.callFunctionInBackground("getPostsWithLike", params, new FunctionCallback<Object>() {
-//
-//            @Override
-//            public void done(Object o, ParseException e) {
-//                if (e != null){
-//                    // Failure!
-//                    Log.e("PostsRecyclerViewAdapter.callFunctionInBackground.done", "error: " + e.getLocalizedMessage());
-//                    Toast.makeText(mContext, "error", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
+
     }
 }
