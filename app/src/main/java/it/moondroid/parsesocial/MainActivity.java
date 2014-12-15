@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.Request;
 import com.facebook.Response;
@@ -89,8 +90,9 @@ public class MainActivity extends ActionBarActivity {
                                         @Override
                                         public void onCompleted(GraphUser fbUser, Response response) {
                                             Log.d("MyApp", "fbUser: "+fbUser.getUsername()+" "+fbUser.getLink());
+                                            Toast.makeText(MainActivity.this, "Hello "+fbUser.getUsername(), Toast.LENGTH_SHORT).show();
                                         }
-                                    });
+                                    }).executeAsync();
                         }
                     }
                 });
