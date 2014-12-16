@@ -74,7 +74,7 @@ public class PostsQueryAdapter extends ParseQueryAdapter {
 
 
         viewHolder.commentsTextView.setText(String.format(getContext().getResources().
-                getString(R.string.comments_count), object.getNumber("comments").intValue()));
+                getString(R.string.comments_count), ((Post)object).getNumComments()));
 
         //viewHolder.likesTextView.setPost((Post) object);
         //LikeIconTextView likesTextView = (LikeIconTextView) v.findViewById(R.id.post_num_likes);

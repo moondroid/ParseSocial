@@ -66,4 +66,9 @@ public class PostDetailActivity extends ActionBarActivity implements PostDetailF
         Toast.makeText(this, "deleted", Toast.LENGTH_SHORT).show();
         NavUtils.navigateUpFromSameTask(this);
     }
+
+    @Override
+    public void onCommentDeleted() {
+        Toast.makeText(this, "deleted", Toast.LENGTH_SHORT).show();
+    }
 }

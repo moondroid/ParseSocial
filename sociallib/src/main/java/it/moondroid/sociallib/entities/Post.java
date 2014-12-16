@@ -25,7 +25,7 @@ public class Post extends ParseObject {
         setFromUser(ParseUser.getCurrentUser());
         setText(text);
         setDate(new Date());
-        put("comments", 0);
+        put("num_comments", 0);
         put("num_likes", 0);
     }
 
@@ -54,7 +54,7 @@ public class Post extends ParseObject {
     }
 
     public int getNumComments(){
-        return getNumber("comments").intValue();
+        return getNumber("num_comments").intValue();
     }
 
     public int getNumLikes(){

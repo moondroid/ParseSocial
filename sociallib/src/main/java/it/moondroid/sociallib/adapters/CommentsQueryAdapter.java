@@ -10,21 +10,21 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 
 import it.moondroid.sociallib.R;
+import it.moondroid.sociallib.entities.Post;
 
 /**
  * Created by marco.granatiero on 24/11/2014.
  */
 public class CommentsQueryAdapter extends ParseQueryAdapter {
 
-    public CommentsQueryAdapter(Context context, final String postId) {
+    public CommentsQueryAdapter(Context context, final Post post) {
         //super(context, "Comment");
         super(context, new QueryFactory<ParseObject>() {
             public ParseQuery create() {
                 ParseQuery query = new ParseQuery("Comment");
-                query.whereEqualTo("postId", postId);
+                query.whereEqualTo("post", post);
                 query.include("from"); //retrieve user also
                 query.orderByAscending("date"); //oldest comments first
-                //query.whereEqualTo("highPri", true);
                 return query;
             }
         });

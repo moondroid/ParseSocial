@@ -16,21 +16,20 @@ public class Comment extends ParseObject {
         // A default constructor is required.
     }
 
-    public Comment(String postId, String text){
-        setPostId(postId);
+    public Comment(Post post, String text){
+        setToPost(post);
         setFromUser(ParseUser.getCurrentUser());
         setText(text);
         setDate(new Date());
     }
 
-    public String getPostId(){
-        return getString("postId");
+    public Post getToPost() {
+        return (Post) get("post");
     }
 
-    public void setPostId(String postId){
-        put("postId", postId);
+    public void setToPost(Post post) {
+        put("post", post);
     }
-
 
     public String getText(){
         return getString("text");

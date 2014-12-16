@@ -59,6 +59,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
 
     public interface OnPostDetailListener {
         public void onPostDeleted();
+        public void onCommentDeleted();
     }
 
 
@@ -71,6 +72,11 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
             mListener = new OnPostDetailListener() {
                 @Override
                 public void onPostDeleted() {
+                    //do nothing
+                }
+
+                @Override
+                public void onCommentDeleted() {
                     //do nothing
                 }
             };
@@ -158,6 +164,13 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
         editTextComment = (EditText) fragmentView.findViewById(R.id.edit_post_content);
 
         objectListView = (ListView)fragmentView.findViewById(R.id.comments_list);
+        objectListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                deleteComment(position);
+                return true;
+            }
+        });
 
         numComments = (IconTextView) fragmentView.findViewById(R.id.post_num_comments);
         numLikes = (LikeIconTextView) fragmentView.findViewById(R.id.post_num_likes);
@@ -190,8 +203,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
             public void onClick(View v) {
                 String commentString = editTextComment.getText().toString();
                 if(!commentString.isEmpty() && post != null){
-                    final Comment comment = new Comment(post.getObjectId(), commentString);
-                    //post.addComment(comment);
+                    final Comment comment = new Comment(post, commentString);
 
                     final MaterialDialog pd = new MaterialDialog(getActivity())
                             .setContentView(getActivity().getLayoutInflater().inflate(R.layout.dialog_indeterminate, null))
@@ -209,8 +221,6 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                                 editTextComment.setText("");
 
                                 updatePost();
-
-                                //numLikes.setPost(post);
 
                             } else {
                                 // Failure!
@@ -232,6 +242,43 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
 
     }
 
+    private void deleteComment(int position){
+
+        final Comment comment = (Comment) adapter.getItem(position);
+        final MaterialDialog confirmDialog = new MaterialDialog(getActivity())
+                .setTitle("Elimina")
+                .setMessage("Eliminare definitivamente questo commento?");
+        confirmDialog.setNegativeButton("Annulla", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmDialog.dismiss();
+            }
+        });
+        confirmDialog.setPositiveButton("OK", new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                confirmDialog.dismiss();
+                final MaterialDialog progressDialog = new MaterialDialog(getActivity())
+                        .setContentView((getActivity().getLayoutInflater().inflate(R.layout.dialog_indeterminate, null)));
+                progressDialog.setCanceledOnTouchOutside(false);
+                progressDialog.show();
+                comment.deleteInBackground(new DeleteCallback() {
+                    @Override
+                    public void done(ParseException e) {
+                        progressDialog.dismiss();
+                        if(e == null){
+                            mListener.onCommentDeleted();
+                            updatePost();
+                        }else {
+                            Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+            }
+        });
+        confirmDialog.show();
+    }
 
     public void updatePost(){
         //adapter.loadObjects();
@@ -259,7 +306,7 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
                     numLikes.setLikeCount(post.getNumLikes());
                     numLikes.setLikedByMe(post.isLikedByMe());
 
-                    adapter = new CommentsQueryAdapter(getActivity(), post.getObjectId());
+                    adapter = new CommentsQueryAdapter(getActivity(), post);
                     objectListView.setAdapter(adapter);
                 }else {
                     // Failure!
@@ -269,46 +316,5 @@ public class PostDetailFragment extends Fragment implements AdapterView.OnItemCl
             }
         });
     }
-
-//    public void updatePost(){
-//        //adapter.loadObjects();
-//
-//        final String postId = getArguments().getString(KEY_POST_ID);
-//
-//        HashMap<String, Object> params = new HashMap<String, Object>();
-//        params.put("postId", postId);
-//        //params.put("user", ParseUser.getCurrentUser());
-//        ParseCloud.callFunctionInBackground("getPostWithLike", params, new FunctionCallback<Object>() {
-//
-//            @Override
-//            public void done(Object result, ParseException e) {
-//                if (e == null) {
-//                    // Success!
-//                    HashMap<String , Object> receivedResult = (HashMap<String, Object>)result;
-//                    post = (Post) receivedResult.get("post");
-//                    boolean isLikedByMe = (boolean) receivedResult.get("isLikedByMe");
-//                    descriptionView.setText(post.getString("text"));
-//                    android.text.format.DateFormat df = new android.text.format.DateFormat();
-//                    dateView.setText(df.format("dd MMMM - hh:mm", post.getDate("date")));
-//                    userView.setText(post.getParseUser("from").getUsername());
-//
-//                    numComments.setText(String.format(getResources().
-//                            getString(R.string.comments_count), post.getNumber("comments").intValue()));
-//
-//                    numLikes.setLikeCount(post.getNumber("num_likes").intValue());
-//                    numLikes.setLikedByMe(isLikedByMe);
-//
-//                    adapter = new CommentsQueryAdapter(getActivity(), post.getObjectId());
-//                    objectListView.setAdapter(adapter);
-//                }else {
-//                    // Failure!
-//                    Log.e("PostDetailFragment.getInBackground.done", "error: " + e.getLocalizedMessage());
-//                    Toast.makeText(getActivity(), "error", Toast.LENGTH_SHORT).show();
-//                }
-//            }
-//        });
-//
-//
-//    }
 
 }
