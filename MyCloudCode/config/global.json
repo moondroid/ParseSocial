@@ -1,0 +1,14 @@
+{
+    "applications": {
+        "ParseSocial": {
+            "applicationId": "za2ypPKTsFFybM7cRWxp8njibzrXkGwMg0DZdgPm", 
+            "masterKey": "zvcFIDtuvVhKqeLsRcizTdIhoFcrc4G3uUCxas7u"
+        }, 
+        "_default": {
+            "link": "ParseSocial"
+        }
+    }, 
+    "global": {
+        "parseVersion": "1.3.2"
+    }
+}
